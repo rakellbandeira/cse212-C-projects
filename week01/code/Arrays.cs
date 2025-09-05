@@ -33,6 +33,10 @@ public static class Arrays
     /// </summary>
     public static void RotateListRight(List<int> data, int amount)
     {
+        //Splitpoint is being calculated first, so then the new list gets
+        //new elements from the for loops that iterates throught the param data list
+        //starting from the splitpoint and adidng them to the list in the new order
+
         List<int> rotatedData = new List<int>();
         int splitPoint = data.Count - amount;
 
@@ -41,6 +45,8 @@ public static class Arrays
         {
             rotatedData.Add(data[i]);
         }
+
+        //Now same logic applied here, but starting on 0 till the splitPoint
 
         //The first elements last
         for (int i= 0; i < splitPoint; i++)
