@@ -6,7 +6,7 @@
                 stack.Push(item);
             }
             else if (item is ')') {
-                if (stack.Count == 0 || stack.Pop() != '(')
+                if (stack.Count == 0 || stack.Pop() != '(') //If the last item here is not (
                     return false;
             }
             else if (item is ']') {
@@ -22,3 +22,5 @@
         return stack.Count == 0;
     }
 }
+
+

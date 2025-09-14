@@ -32,7 +32,7 @@ public class CustomerService {
     }
 
     private readonly List<Customer> _queue = new();
-    private readonly int _maxSize;
+    private readonly int _maxSize; // to public
 
     public CustomerService(int maxSize) {
         if (maxSize <= 0)
