@@ -15,7 +15,10 @@ public static class Recursion
     public static int SumSquaresRecursive(int n)
     {
         // TODO Start Problem 1
+        if (n <= 0)
         return 0;
+
+        return n * n + SumSquaresRecursive(n - 1);
     }
 
     /// <summary>
@@ -38,9 +41,45 @@ public static class Recursion
     /// and the length of the letters list).
     /// </summary>
     public static void PermutationsChoose(List<string> results, string letters, int size, string word = "")
+{
+    // Base Case
+    if (word.Length == size)
     {
-        // TODO Start Problem 2
+        
+        results.Add(word);
+        return;
     }
+    
+    
+    var used = word.Length == 0 ? new bool[letters.Length] : null;
+    
+    if (used == null)
+    {
+        used = new bool[letters.Length];
+    }
+    
+    foreach (var c in word)
+    {
+        for (var i = 0; i < letters.Length; i++)
+        {
+            if (!used[i] && letters[i] == c)
+            {
+                used[i] = true;
+                break;
+            }
+        }
+    }
+    
+    for (var i = 0; i < letters.Length; i++)
+    {
+        if (!used[i])
+        {
+            used[i] = true;
+            PermutationsChoose(results, letters, size, word + letters[i]);
+            used[i] = false;
+        }
+    }
+}
 
     /// <summary>
     /// #############
@@ -98,8 +137,18 @@ public static class Recursion
 
         // TODO Start Problem 3
 
-        // Solve using recursion
-        decimal ways = CountWaysToClimb(s - 1) + CountWaysToClimb(s - 2) + CountWaysToClimb(s - 3);
+        if (remember == null)
+        remember = new Dictionary<int, decimal>();
+    
+        if (remember.ContainsKey(s))
+            return remember[s];
+    
+        decimal ways =
+            CountWaysToClimb(s - 1, remember) +
+            CountWaysToClimb(s - 2, remember) +
+            CountWaysToClimb(s - 3, remember);
+        
+        remember[s] = ways;
         return ways;
     }
 
@@ -117,9 +166,23 @@ public static class Recursion
     /// some of the string functions like IndexOf and [..X] / [X..] to be useful in solving this problem.
     /// </summary>
     public static void WildcardBinary(string pattern, List<string> results)
+{
+    // Base Case
+    if (pattern.IndexOf('*') == -1)
     {
-        // TODO Start Problem 4
+        results.Add(pattern);
+        return;
     }
+    
+    // Recursive Case
+    var wildcardIndex = pattern.IndexOf('*');
+    
+    var prefix = pattern[..wildcardIndex];
+    var suffix = pattern[(wildcardIndex + 1)..];
+    
+    WildcardBinary(prefix + '0' + suffix, results);
+    WildcardBinary(prefix + '1' + suffix, results);
+}
 
     /// <summary>
     /// Use recursion to insert all paths that start at (0,0) and end at the
@@ -129,15 +192,36 @@ public static class Recursion
     {
         // If this is the first time running the function, then we need
         // to initialize the currPath list.
-        if (currPath == null) {
+        if (currPath == null)
+        {
             currPath = new List<ValueTuple<int, int>>();
         }
-        
-        // currPath.Add((1,2)); // Use this syntax to add to the current path
+
+        currPath.Add((1, 2)); // Use this syntax to add to the current path
 
         // TODO Start Problem 5
-        // ADD CODE HERE
+          
+        if (maze.IsEnd(x, y))
+        {
+            results.Add(currPath.AsString());
+            currPath.RemoveAt(currPath.Count - 1); 
+            return;
+        }
+        
+        int[,] directions = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } }; // Up, Down, Left, Right
+        
+        for (int i = 0; i < directions.GetLength(0); i++)
+        {
+            int newX = x + directions[i, 0];
+            int newY = y + directions[i, 1];
+            
+            if (maze.IsValidMove(currPath, newX, newY))
+            {
+                SolveMaze(results, maze, newX, newY, currPath);
+            }
+        }
+        
+        currPath.RemoveAt(currPath.Count - 1);
 
-        // results.Add(currPath.AsString()); // Use this to add your path to the results array keeping track of complete maze solutions when you find the solution.
     }
 }
